@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <script
+            src="https://cdn.socket.io/4.3.2/socket.io.min.js"
+            integrity="sha384-KAZ4DtjNhLChOB/hxXuKqhMLYvx3b5MlT55xPEiNmREKRzeEm+RVPlTnAn0ajQNs"
+            crossorigin="anonymous"
+        ></script>
+        <!-- <script defer src="/node_modules/socket.io/client-dist/socket.io.min.js"></script> -->
+        <script defer src="./app.js"></script>
+    </head>
+    <body>
+        <h1>Web Socket Notification Demo</h1>
+        <h2>Using Socket.io in nodejs and expressjs</h2>
+        <p>User Name</p>
+        <input type="text" id="nameInput" placeholder="Input Your Name" />
+        <br />
+        <p>Room ID</p>
+        <input type="text" id="idInput" value="1" />
+        <button id="joinBtn">Join</button>
+        <br />
+        <p>Message</p>
+        <input type="text" id="msgInput" />
+        <button id="sendMsgBtn">send message</button>
+
+        <div
+            id="notification"
+            style="margin: 20px 0; width: 100%; background-color: black; color: aliceblue"
+        ></div>
+    </body>
+</html>
