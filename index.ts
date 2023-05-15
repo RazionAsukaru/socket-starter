@@ -12,7 +12,7 @@ import { instrument } from '@socket.io/admin-ui';
 
 export const app = express();
 dotenv.config();
-const port = process.env.PORT;
+const port = process.env.PORT || 8080;
 
 // const options: ServerOptions = {
 //     key: fs.readFileSync('/etc/star/STAR.sf-international.id_key.pem'),
@@ -33,7 +33,6 @@ app.get('/', async (req, res) => {
 });
 /* #endregion Serving Static Webapp */
 
-/*  */
 /* #region Dummy api for calling to api of namespace */
 app.post('/message', async (req, res) => {
     const { id, message, user } = req.body;

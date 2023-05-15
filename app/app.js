@@ -7,6 +7,7 @@ const usernameInput = document.getElementById('nameInput');
 const messageInput = document.getElementById('msgInput');
 const joinBtn = document.getElementById('joinBtn');
 const sendMsgBtn = document.getElementById('sendMsgBtn');
+const notifications = document.getElementById('notification');
 var notification = [];
 
 socket.on('connect', () => {
@@ -29,10 +30,15 @@ socket.on('unauthorized', (error) => {
 });
 
 socket.on('on-notification', (res) => {
-    console.log(typeof res);
-    notification.push(`<p>${typeof res === 'string' ? res : res.notification}</p>`);
-    console.log(notification.toString().replace(/,/g, ''));
-    document.getElementById('notification').innerHTML = JSON.stringify(notification.toString().replace(/,/g, ''));
+    notification.unshift(typeof res === 'string' ? res : res.notification);
+    notifications.replaceChildren();
+    notification.forEach((val) => {
+        const para = document.createElement('p');
+        para.innerText = val;
+        notifications.appendChild(para);
+    });
+    notifications.scrollTop = notifications.scrollHeight;
+    // document.getElementById('notification').innerHTML = JSON.stringify(notification.toString().replace(/,/g, ''));
 });
 
 messageInput.addEventListener('keypress', function (event) {
