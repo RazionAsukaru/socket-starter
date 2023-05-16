@@ -7,8 +7,8 @@ const usernameInput = document.getElementById('nameInput');
 const messageInput = document.getElementById('msgInput');
 const joinBtn = document.getElementById('joinBtn');
 const sendMsgBtn = document.getElementById('sendMsgBtn');
-const notifications = document.getElementById('notification');
-var notification = [];
+const notificationDiv = document.getElementById('notification');
+const notifications = [];
 
 socket.on('connect', () => {
     const engine = socket.io.engine;
@@ -30,15 +30,34 @@ socket.on('unauthorized', (error) => {
 });
 
 socket.on('on-notification', (res) => {
-    notification.unshift(typeof res === 'string' ? res : res.notification);
-    notifications.replaceChildren();
-    notification.forEach((val) => {
-        const para = document.createElement('p');
-        para.innerText = val;
-        notifications.appendChild(para);
+    notifications.push(res);
+    notificationDiv.replaceChildren([]);
+    notifications.forEach((val) => {
+        if (typeof val === 'string') {
+            const para = document.createElement('div');
+            para.innerHTML = `<div style="display: flex; justify-content: center; width 100%">
+            <div style="border: 1px solid #cd2f78; background: #feca07; padding: 5px; border-radius: 6px; font-family: Helvetica; max-width: 400px; width: auto; text-align: center">
+            <span style="font-weight: bold;">${val}</span>
+            </div>
+          </div>`;
+            notificationDiv.appendChild(para);
+        } else {
+            const para = document.createElement('div');
+            para.innerHTML = `
+            <div style="display: flex; justify-content: ${
+                val.user === usernameInput.value ? 'flex-end' : 'flex-start'
+            }">
+            <div style="border: 1px solid #cd2f78; background: #cd2f78; color: #fff; padding: 5px; border-radius: 6px; font-family: Helvetica; margin: 2px; text-align:${
+                val.user === usernameInput.value ? 'right' : 'left'
+            }">
+            <span style="font-weight: bold; margin-right:15px">${val.user}</span><span style="font-size:12px; margin-left:15px">${val.time}</span>
+              </br>
+              <span>${val.message}</span>
+            </div></div>`;
+            notificationDiv.appendChild(para);
+        }
     });
-    notifications.scrollTop = notifications.scrollHeight;
-    // document.getElementById('notification').innerHTML = JSON.stringify(notification.toString().replace(/,/g, ''));
+    notificationDiv.scrollTop = notificationDiv.scrollHeight;
 });
 
 messageInput.addEventListener('keypress', function (event) {
@@ -52,10 +71,15 @@ joinBtn.onclick = () => {
 };
 
 sendMsgBtn.onclick = () => {
+    const currentdate = new Date();
+    console.log(currentdate.getMinutes());
+    const hours = currentdate.getHours();
+    const minutes = currentdate.getMinutes();
     httpPost('http://localhost:8080/message', {
         id: idInput.value,
         message: messageInput.value,
         user: usernameInput.value,
+        time: hours + ':' + (minutes > 9 ? minutes : '0' + minutes),
     }).then((res) => {
         res.clone().json();
         messageInput.value = '';

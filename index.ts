@@ -35,11 +35,11 @@ app.get('/', async (req, res) => {
 
 /* #region Dummy api for calling to api of namespace */
 app.post('/message', async (req, res) => {
-    const { id, message, user } = req.body;
+    const { id, message, user, time } = req.body;
     if (!!!id || !!!message || !!!user)
         return res.status(400).send('Please input Room Id, User Name, and Message ');
     const msg = {
-        notificationMessage: `[ ${user} ] :  ${message}`,
+        data: { id, message, user, time },
     };
     const data = Object.assign({}, msg, req.body);
     axios.post('http://localhost:8080/api/sfi/update-notification', data).then((d) => {});

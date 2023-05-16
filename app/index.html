@@ -28,16 +28,22 @@
     >
         <div class="container">
             <section class="d-flex flex-column text-center justify-content-center">
-                <h1 style="color: white;">Web Socket Notification Demo</h1>
-                <h2 style="color: white;">Using Socket.io in nodejs and expressjs</h2>
+                <h1 style="color: white">Web Socket Chat App Demo</h1>
+                <h2 style="color: white">Using Socket.io in nodejs and expressjs</h2>
             </section>
             <section class="row mb-3 mt-3">
                 <div class="col-md-5">
-                    <label for="nameInput" class="form-label" style="color: white;">Username</label>
-                    <input type="text" class="form-control" id="nameInput" placeholder="Input Your Name" />
+                    <label for="nameInput" class="form-label" style="color: white">Username</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        maxlength="20"
+                        id="nameInput"
+                        placeholder="Input Your Name"
+                    />
                 </div>
                 <div class="col-md-5">
-                    <label for="idInput" class="form-label" style="color: white;">Room ID</label>
+                    <label for="idInput" class="form-label" style="color: white">Room ID</label>
                     <input type="text" class="form-control" id="idInput" value="1" />
                 </div>
                 <div class="col-md-2 d-flex align-items-end">
