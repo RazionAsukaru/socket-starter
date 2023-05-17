@@ -22,6 +22,8 @@ export default (io: Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap,
 
         socket.on('leave', (data, callback) => {
             const { id, user } = data;
+            console.log(data);
+            
             if (!!!id) {
                 sfiSocket.emit('after-join', `You are not part of Room [ ${id} ] !`);
                 return;

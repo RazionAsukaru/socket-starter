@@ -21,7 +21,6 @@
     <body
         class="pt-4"
         style="
-            height: 100vh;
             background: rgb(205, 47, 120);
             background: linear-gradient(135deg, rgba(205, 47, 120, 1) 42%, rgba(254, 202, 6, 1) 100%);
         "
@@ -45,7 +44,7 @@
                 <div class="mt-2 col-md-6">
                     <label for="idInput" class="form-label" style="color: white">Room ID</label>
                     <div class="input-group">
-                        <input type="text" class="form-control" id="idInput" value="1" />
+                        <input type="text" class="form-control" id="idInput" />
                         <button id="joinBtn" type="button" class="btn btn-primary" style="width: 100px">
                             Join
                         </button>
@@ -61,7 +60,7 @@
                 <div class="mt-2 col-md-6">
                     <label for="idLeaveInput" class="form-label" style="color: white">Leave Room ID</label>
                     <div class="input-group">
-                        <input type="text" class="form-control" id="idInput" />
+                        <input type="text" class="form-control" id="idLeaveInput" />
                         <button id="leaveBtn" type="button" class="btn btn-primary" style="width: 100px">
                             Leave
                         </button>
@@ -69,45 +68,41 @@
                 </div>
             </section>
 
-            <section class="container">
+            <section>
                 <div
                     id="messages"
                     class="card align-bottom"
                     style="
                         margin: 20px 0;
                         width: 100%;
-                        min-height: 250px;
-                        height: 100vh;
-                        max-height: 500px;
+                        height: 450px;
                         overflow: auto;
                         padding: 10px;
                     "
                 ></div>
             </section>
 
-            <div class="fixed-bottom container mb-4">
-                <section class="row mt-3">
-                    <div class="mt-2 col-12">
-                        <div class="input-group">
-                            <input type="text" class="form-control" id="msgInput" placeholder="Send message here..." />
-                            <button id="sendMsgBtn" type="button" class="btn btn-primary" style="width: 100px;">
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="16"
-                                    height="16"
-                                    fill="currentColor"
-                                    class="bi bi-send"
-                                    viewBox="0 0 16 16"
-                                >
-                                    <path
-                                        d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576 6.636 10.07Zm6.787-8.201L1.591 6.602l4.339 2.76 7.494-7.493Z"
-                                    />
-                                </svg>
-                        </div>
-                        </button>
+            <section class="row mt-3" style="padding-bottom: 40px">
+                <div class="mt-2 col-12">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="msgInput" placeholder="Send message here..." />
+                        <button id="sendMsgBtn" type="button" class="btn btn-primary" style="width: 100px;">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="16"
+                                height="16"
+                                fill="currentColor"
+                                class="bi bi-send"
+                                viewBox="0 0 16 16"
+                            >
+                                <path
+                                    d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576 6.636 10.07Zm6.787-8.201L1.591 6.602l4.339 2.76 7.494-7.493Z"
+                                />
+                            </svg>
                     </div>
-                </section>
-            </div>
+                    </button>
+                </div>
+            </section>
         </div>
     </body>
 </html>

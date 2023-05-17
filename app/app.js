@@ -55,14 +55,17 @@ joinBtn.onclick = () => {
     socket.emit('join', { id: idInput.value, user: usernameInput.value }, (res) => {
         rooms.push(idInput.value);
         updateRooms();
+        idInput.value = '';
     });
 };
 
 leaveBtn.onclick = () => {
+    console.log('asd');
     socket.emit('leave', { id: idLeaveInput.value, user: usernameInput.value }, (res) => {
         const idx = rooms.indexOf(idLeaveInput.value);
         rooms.splice(idx, 1);
         updateRooms();
+        idLeaveInput.value = '';
     });
 };
 
