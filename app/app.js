@@ -3,12 +3,16 @@ const socket = io('ws://localhost:8080/sfi', { forceNew: true, reconnectionAttem
 // var id = window.btoa(Math.random(100));
 
 const idInput = document.getElementById('idInput');
+const idLeaveInput = document.getElementById('idLeaveInput');
 const usernameInput = document.getElementById('nameInput');
 const messageInput = document.getElementById('msgInput');
 const joinBtn = document.getElementById('joinBtn');
+const leaveBtn = document.getElementById('leaveBtn');
 const sendMsgBtn = document.getElementById('sendMsgBtn');
-const notificationDiv = document.getElementById('notification');
-const notifications = [];
+const messagesDiv = document.getElementById('messages');
+const joinedRoomDiv = document.getElementById('joinedRoom');
+let messages = [];
+let rooms = [];
 
 socket.on('connect', () => {
     const engine = socket.io.engine;
@@ -20,6 +24,8 @@ socket.on('connect', () => {
 
 socket.on('after-join', (res) => {
     alert(res);
+    messages = [];
+    messagesDiv.replaceChildren([]);
 });
 
 socket.on('unauthorized', (error) => {
@@ -30,34 +36,13 @@ socket.on('unauthorized', (error) => {
 });
 
 socket.on('on-notification', (res) => {
-    notifications.push(res);
-    notificationDiv.replaceChildren([]);
-    notifications.forEach((val) => {
-        if (typeof val === 'string') {
-            const para = document.createElement('div');
-            para.innerHTML = `<div style="display: flex; justify-content: center; width 100%">
-            <div style="border: 1px solid #cd2f78; background: #feca07; padding: 5px; border-radius: 6px; font-family: Helvetica; max-width: 400px; width: auto; text-align: center">
-            <span style="font-weight: bold;">${val}</span>
-            </div>
-          </div>`;
-            notificationDiv.appendChild(para);
-        } else {
-            const para = document.createElement('div');
-            para.innerHTML = `
-            <div style="display: flex; justify-content: ${
-                val.user === usernameInput.value ? 'flex-end' : 'flex-start'
-            }">
-            <div style="border: 1px solid #cd2f78; background: #cd2f78; color: #fff; padding: 5px; border-radius: 6px; font-family: Helvetica; margin: 2px; text-align:${
-                val.user === usernameInput.value ? 'right' : 'left'
-            }">
-            <span style="font-weight: bold; margin-right:15px">${val.user}</span><span style="font-size:12px; margin-left:15px">${val.time}</span>
-              </br>
-              <span>${val.message}</span>
-            </div></div>`;
-            notificationDiv.appendChild(para);
-        }
-    });
-    notificationDiv.scrollTop = notificationDiv.scrollHeight;
+    messages.push(res);
+    drawMessages();
+});
+
+socket.on('message', (res) => {
+    messages.push(res);
+    drawMessages();
 });
 
 messageInput.addEventListener('keypress', function (event) {
@@ -67,40 +52,72 @@ messageInput.addEventListener('keypress', function (event) {
 });
 
 joinBtn.onclick = () => {
-    socket.emit('join', { id: idInput.value, user: usernameInput.value });
+    socket.emit('join', { id: idInput.value, user: usernameInput.value }, (res) => {
+        rooms.push(idInput.value);
+        updateRooms();
+    });
+};
+
+leaveBtn.onclick = () => {
+    socket.emit('leave', { id: idLeaveInput.value, user: usernameInput.value }, (res) => {
+        const idx = rooms.indexOf(idLeaveInput.value);
+        rooms.splice(idx, 1);
+        updateRooms();
+    });
 };
 
 sendMsgBtn.onclick = () => {
     const currentdate = new Date();
-    console.log(currentdate.getMinutes());
     const hours = currentdate.getHours();
     const minutes = currentdate.getMinutes();
-    httpPost('http://localhost:8080/message', {
-        id: idInput.value,
-        message: messageInput.value,
-        user: usernameInput.value,
-        time: hours + ':' + (minutes > 9 ? minutes : '0' + minutes),
-    }).then((res) => {
-        res.clone().json();
-        messageInput.value = '';
-    });
-};
-
-const httpPost = (path, data) => {
-    return fetch(path, getOptions('POST', data));
-};
-
-const getOptions = (verb, data) => {
-    var options = {
-        dataType: 'json',
-        method: verb,
-        headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
+    socket.emit(
+        'message',
+        {
+            id: idInput.value,
+            message: messageInput.value,
+            user: usernameInput.value,
+            time: hours + ':' + (minutes > 9 ? minutes : '0' + minutes),
         },
-    };
-    if (data) {
-        options.body = JSON.stringify(data);
-    }
-    return options;
+        (res) => {
+            messages.push(res);
+            messageInput.value = '';
+            drawMessages();
+        }
+    );
+};
+
+const updateRooms = () => {
+    joinedRoomDiv.value = rooms.toString().replace(/,/g, ', ');
+};
+
+const drawMessages = () => {
+    messagesDiv.replaceChildren([]);
+    messages.forEach((val) => {
+        if (typeof val === 'string') {
+            const para = document.createElement('div');
+            para.innerHTML = `<div style="display: flex; justify-content: center; width 100%">
+            <div style="border: 1px solid #cd2f78; background: #feca07; padding: 5px; border-radius: 6px; font-family: Helvetica; max-width: 400px; width: auto; text-align: center">
+            <span style="font-weight: bold;">${val}</span>
+            </div>
+          </div>`;
+            messagesDiv.appendChild(para);
+        } else {
+            const para = document.createElement('div');
+            para.innerHTML = `
+            <div style="display: flex; justify-content: ${
+                val.user === usernameInput.value ? 'flex-end' : 'flex-start'
+            }">
+            <div style="border: 1px solid #cd2f78; background: #cd2f78; color: #fff; padding: 5px; border-radius: 6px; font-family: Helvetica; margin: 2px; text-align:${
+                val.user === usernameInput.value ? 'right' : 'left'
+            }">
+            <span style="font-weight: bold; margin-right:15px">${
+                val.user
+            }</span><span style="font-size:12px; margin-left:15px">${val.time}</span>
+              </br>
+              <span>${val.message}</span>
+            </div></div>`;
+            messagesDiv.appendChild(para);
+        }
+    });
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
 };
