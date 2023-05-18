@@ -1,16 +1,13 @@
-const socket = io('ws://localhost:8080/sfi', { forceNew: true, reconnectionAttempts: 10 });
-
-// var id = window.btoa(Math.random(100));
+const socket = io('ws://localhost:8080/chat', { forceNew: true, reconnectionAttempts: 10 });
 
 const idInput = document.getElementById('idInput');
-const idLeaveInput = document.getElementById('idLeaveInput');
 const usernameInput = document.getElementById('nameInput');
 const messageInput = document.getElementById('msgInput');
 const joinBtn = document.getElementById('joinBtn');
 const leaveBtn = document.getElementById('leaveBtn');
 const sendMsgBtn = document.getElementById('sendMsgBtn');
 const messagesDiv = document.getElementById('messages');
-const joinedRoomDiv = document.getElementById('joinedRoom');
+
 let messages = [];
 let rooms = [];
 
@@ -20,12 +17,6 @@ socket.on('connect', () => {
     engine.on('close', (reason) => {
         // called when the underlying connection is closed
     });
-});
-
-socket.on('after-join', (res) => {
-    alert(res);
-    messages = [];
-    messagesDiv.replaceChildren([]);
 });
 
 socket.on('unauthorized', (error) => {
@@ -52,20 +43,30 @@ messageInput.addEventListener('keypress', function (event) {
 });
 
 joinBtn.onclick = () => {
-    socket.emit('join', { id: idInput.value, user: usernameInput.value }, (res) => {
+    socket.emit('join', { id: idInput.value, user: usernameInput.value }, ({ status, value }) => {
+        alert(value);
+
+        if (status === 'error') return;
+
         rooms.push(idInput.value);
-        updateRooms();
-        idInput.value = '';
+        joinBtn.style.display = 'none';
+        usernameInput.setAttribute('disabled', 'disabled');
+        idInput.setAttribute('disabled', 'disabled');
+        leaveBtn.style.display = 'block';
     });
 };
 
 leaveBtn.onclick = () => {
-    console.log('asd');
-    socket.emit('leave', { id: idLeaveInput.value, user: usernameInput.value }, (res) => {
-        const idx = rooms.indexOf(idLeaveInput.value);
-        rooms.splice(idx, 1);
-        updateRooms();
-        idLeaveInput.value = '';
+    socket.emit('leave', { id: idInput.value, user: usernameInput.value }, ({ status, value }) => {
+        alert(value);
+        if (status === 'error') {
+            return;
+        }
+        messages.push(value)
+        joinBtn.style.display = 'block';
+        usernameInput.removeAttribute('disabled');
+        idInput.removeAttribute('disabled');
+        leaveBtn.style.display = 'none';
     });
 };
 
@@ -87,10 +88,6 @@ sendMsgBtn.onclick = () => {
             drawMessages();
         }
     );
-};
-
-const updateRooms = () => {
-    joinedRoomDiv.value = rooms.toString().replace(/,/g, ', ');
 };
 
 const drawMessages = () => {
