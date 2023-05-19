@@ -5,7 +5,7 @@
   "main": "index.ts",
   "scripts": {
     "start": "nodemon index.ts",
-    "start:prod": "pm2 start dist",
+    "start:prod": "pm2 start dist -n socket-starter",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc"
   },

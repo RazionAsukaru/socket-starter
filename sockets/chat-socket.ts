@@ -6,6 +6,8 @@ export default (io: Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap,
     const chatSocket = io.of('/chat');
 
     chatSocket.on(e.connection, (socket) => {
+        console.log(socket.id);
+
         socket.on(e.join, (data, callback) => {
             const { id, user } = data;
             if (!!!id || !!!user) {
