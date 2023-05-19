@@ -12,11 +12,7 @@ let messages = [];
 let rooms = [];
 
 socket.on('connect', () => {
-    const engine = socket.io.engine;
-
-    engine.on('close', (reason) => {
-        // called when the underlying connection is closed
-    });
+    console.log(socket.id);
 });
 
 socket.on('unauthorized', (error) => {
